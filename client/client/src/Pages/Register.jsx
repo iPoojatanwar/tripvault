@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "./Register.css";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import API from "../api/axios";
 const Register = () => {
   const navigate= useNavigate()
   const [formData, setFormData] = useState({
@@ -23,10 +23,7 @@ const Register = () => {
     setError("");
     setLoading(true);
     try { 
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        formData
-      );   
+      const response = await API.post("/auth/register",formData);   
       setFormData({
         name: "",
         email: "",

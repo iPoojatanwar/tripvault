@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import axios from 'axios'
 import toast from 'react-hot-toast'
 import './Register.css'
 import { Link, useNavigate } from 'react-router-dom'
+import API from '../api/axios'
 export const Login = () => {
   const navigate= useNavigate()
 const [formData,setFormData]=useState({
@@ -22,7 +22,7 @@ e.preventDefault()
 setError("")
 setLoading(true)
 try {
-    const response = await axios.post("http://localhost:5000/api/auth/login", formData)
+    const response = await API.post("/auth/login", formData)
     localStorage.setItem("token",response.data.token)
     setFormData({
       email:"",

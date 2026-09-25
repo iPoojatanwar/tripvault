@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import { route } from './routes/auth.route.js'
+import { triprouter } from './routes/tripRouter.js'
 
 dotenv.config()
 
@@ -16,7 +17,7 @@ const mongodb=process.env.DATABASE_URL
  
 app.get('/',(req,res)=>{res.status(200).json({message:"TripVault API IS RUNNING"})})
 app.use('/api/auth',route)
-
+app.use('/api/trip',triprouter)
     const startServer= async()=>{
         try {   
         await mongoose.connect(mongodb)
