@@ -9,12 +9,11 @@ import ProtectedRoute from './Components/ProtectedRoute'
 import TripForm from './Components/TripForm'
 import TripCard from './Components/TripCard'
 import UpdateTrip from './Components/UpdateTrip'
+import PublicProfile from './Pages/PublicProfile'
 function App() {
   return (
     <>
    <BrowserRouter>
-  
-  
     <Routes>
     <Route path="/" element={<Navigate to="/login" />} />
     <Route path='/login' element={<Login/>}/>
@@ -25,10 +24,10 @@ function App() {
      <Route path='/tripCard/:id' element={<TripCard/>}/>
     <Route path='/register' element={<Register/>}/>
     <Route path='/updateTrip/:id' element={<UpdateTrip/>}/>
+    <Route path='/profile/:username' element={<PublicProfile/>}/>
    </Routes> 
    </BrowserRouter>
     </>
   )
 }
-
 export default App

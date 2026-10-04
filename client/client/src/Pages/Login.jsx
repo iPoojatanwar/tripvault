@@ -29,7 +29,9 @@ try {
       password:""  
     })
     toast.success("Login successful!")
-    navigate("/dashboard");
+    setTimeout(()=>{
+ navigate("/dashboard");
+    },2000)
  } catch (err) {
      const message=( err.response?.data?.message|| "Login failed. Please try again.")
 setError(message)

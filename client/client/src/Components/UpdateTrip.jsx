@@ -1,61 +1,108 @@
-import  { useEffect, useState } from 'react'
-import{ useNavigate, useParams} from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import API from '../api/axios'
 const UpdateTrip = () => {
-  const {id}= useParams()
-  const navigate= useNavigate()
-  const[loading,setLoading]=useState(false)
-    const[formData,setFormData]=useState({
-      title:'',
-      startDate:'',
-      endDate:'',
-      description:'',
-      destination:'',
-      rating:''
-    })
-useEffect(()=>{
-     const update=async ()=>{
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    title: '',
+    startDate: '',
+    endDate: '',
+    description: '',
+    destination: '',
+    rating: '',
+    coverImage: null, 
+    photos: []      
+  })
+  useEffect(() => {
+    const fetchTrip = async () => {
+      try {
+        const response = await API.get(`/trip/${id}`)
+        const trip = response.data.trip
+        setFormData({
+          title: trip.title || '',
+          startDate: trip.startDate ? trip.startDate.substring(0, 10) : '',
+          endDate: trip.endDate ? trip.endDate.substring(0, 10) : '',
+          description: trip.description || '',
+          destination: trip.destination || '',
+          rating: trip.rating || '',
+          coverImage: trip.coverImage || '',
+          photos: trip.photos || []
+        })
+      } catch (error) {
+        console.error('Error fetching trip data:', error)
+      }
+    }
+    fetchTrip()
+  }, [id])
+  const handleChange = (e) => {
+    const { name, value, files } = e.target
+    if (name === "coverImage") {
+      if (files && files[0]) {
+        setFormData((prev) => ({
+          ...prev,
+          coverImage: files[0],
+        }))
+      }
+      return
+    }
+    if (name === "photos") {
+      if (files && files.length > 0) {
+        setFormData((prev) => ({
+          ...prev,
+          photos: [
+            ...prev.photos,
+            ...Array.from(files),
+          ],
+        }))
+      }
+      return
+    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+  const handleRemovePhoto = (indexToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      photos: prev.photos.filter((_, index) => index !== indexToRemove),
+    }))
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
     try {
-            const response = await API.get(`/trip/${id}`)
-            const trip= response.data.trip
-            setFormData({
-              title:trip.title || '',
-              startDate:trip.startDate
-               ? trip.startDate.substring(0,10)
-              : '' ,
-              endDate:trip.endDate 
-              ?trip.endDate.substring(0,10) 
-              : '',
-              description:trip.description || '',
-              destination:trip.destination || '',
-              rating:trip.rating || ''
-            })
+      const data = new FormData()
+      data.append('title', formData.title)
+      data.append('startDate', formData.startDate)
+      data.append('endDate', formData.endDate)
+      data.append('description', formData.description)
+      data.append('destination', formData.destination)
+      data.append('rating', formData.rating)
+      if (formData.coverImage instanceof File) {
+        data.append('coverImage', formData.coverImage)
+      } else if (typeof formData.coverImage === 'string') {
+        data.append('existingcoverImage', formData.coverImage)
+      }
+      formData.photos.forEach((photo) => {
+        if (photo instanceof File) {
+          data.append('photos', photo)
+        } else if (typeof photo === 'string') {
+          data.append('existingPhotos', photo)
         }
-    catch (error) {
-        console.log(error)
+      })
+      await API.put(`/trip/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      navigate('/dashboard')
+    } catch (error) {
+      console.error('Error updating trip:', error)
+    } finally {
+      setLoading(false)
     }
   }
-    update()
-},[id])
-const handleChange = (e)=>{
-setFormData({
-  ...formData,
-  [e.target.name]:e.target.value
-})
-}
- const handleSubmit=async (e)=>{
-e.preventDefault()
- setLoading(true)
-try {
-   await API.put(`/trip/${id}`,formData)
-  navigate('/dashboard')
-} catch (error) {
-  console.error(error)
-}
-finally{
-  setLoading(false)
-}
- }
   return (
     <div className="relative min-h-screen bg-slate-950 flex items-center justify-center p-4 overflow-hidden">
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-600/30 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
@@ -71,102 +118,138 @@ finally{
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
               Title
             </label>
-            <div>
-              <input 
-                type="text"
-                placeholder='Enter title'
-                value={formData.title}
-                onChange={handleChange}
-                name='title'
-                className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
-              />
-            </div>
+            <input 
+              type="text"
+              placeholder="Enter title"
+              value={formData.title}
+              onChange={handleChange}
+              name="title"
+              className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
+            />
           </div>
           <div className="grid grid-cols-2 gap-3"> 
             <div>
-              <label htmlFor="" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
                 Start-Date
               </label>
               <input 
                 type="date"
                 value={formData.startDate}
                 onChange={handleChange}
-                name='startDate'
+                name="startDate"
                 className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all [color-scheme:dark]"
               />
             </div>
             <div>
-              <label htmlFor="" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
                 End-Date
               </label>
               <input 
                 type="date"
-                name='endDate'
+                name="endDate"
                 value={formData.endDate}
                 onChange={handleChange}
-                     className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all [color-scheme:dark]"
+                className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all [color-scheme:dark]"
               />
             </div>
           </div>
           <div>
-            <label htmlFor="" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
               Description
             </label>
-            <div>
-              <textarea 
-                rows={2}
-                cols={19}
-                placeholder="Add trip notes or description..."
-                value={formData.description}
-                onChange={handleChange}
-                name='description'
-                className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all resize-y"
-              />
-            </div>
+            <textarea 
+              rows={2}
+              cols={19}
+              placeholder="Add trip notes or description..."
+              value={formData.description}
+              onChange={handleChange}
+              name="description"
+              className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all resize-y"
+            />
           </div>
           <div>
-            <label htmlFor="" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
               Destination
             </label>
-            <div>
-              <input
-                type="text" 
-                placeholder="Where are you traveling?"
-                value={formData.destination}
-                name='destination'
-                onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
-              />
-            </div>
+            <input
+              type="text" 
+              placeholder="Where are you traveling?"
+              value={formData.destination}
+              name="destination"
+              onChange={handleChange}
+              className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
+            />
           </div>
           <div>
-            <label htmlFor="" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
               Rating
             </label>
-            <div>
-              <input 
-                type="number"
-                name='rating'
-                min='1'
-                max='5'
-                value={formData.rating}
-                onChange={handleChange} 
-                className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
-              />
-            </div>
+            <input 
+              type="number"
+              name="rating"
+              min="1"
+              max="5"
+              value={formData.rating}
+              onChange={handleChange} 
+              className="w-full px-3.5 py-2.5 bg-slate-800/40 border border-slate-700/60 rounded-lg text-sm text-slate-100 focus:outline-none focus:bg-slate-800/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
+            />
+          </div>
+          <div>
+            <label htmlFor="coverImage" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+              Trip Image
+            </label>
+            <input
+              type="file"
+              id="coverImage"
+              name="coverImage"
+              onChange={handleChange}
+              accept=".png,.jpg,.jpeg"
+              className="w-full px-3 py-2.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm text-slate-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-500/15 file:text-indigo-400 file:font-medium hover:file:bg-indigo-500/25 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            />
+          </div>
+          <div>
+            <label htmlFor="photos" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+              Additional Photos
+            </label>
+            <input
+              type="file"
+              id="photos"
+              name="photos"
+              multiple
+              onChange={handleChange}
+              accept=".png,.jpeg,.jpg"
+              className="w-full px-3 py-2.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm text-slate-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-500/15 file:text-indigo-400 file:font-medium hover:file:bg-indigo-500/25 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            />
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">
+            {formData.photos.map((photo, index) => (
+              <div key={index} className="relative group overflow-hidden rounded-xl border border-slate-700 bg-slate-800 shadow-md">
+                <img 
+                  src={typeof photo === 'string' ? photo : URL.createObjectURL(photo)} 
+                  alt={photo.name || `photo-${index}`} 
+                  className="w-full h-24 object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <button 
+                  type="button" 
+                  onClick={() => handleRemovePhoto(index)}
+                  className="absolute top-1 right-1 w-7 h-7 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-xs font-bold transition-all"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
           </div>
           <button 
             type="submit"
             disabled={loading}
-           
             className="w-full text-center mt-2 py-3 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg shadow-indigo-600/30 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-             {loading?"Update..":"Submit.." } 
-           
+            {loading ? "Updating..." : "Submit"}
           </button>
         </form>
       </div>
     </div> 
   )
 }
+
 export default UpdateTrip

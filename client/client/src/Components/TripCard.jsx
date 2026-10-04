@@ -53,6 +53,15 @@ const TripCard = () => {
     <div className="min-h-screen w-full bg-slate-950 px-4 py-10 flex items-center justify-center">
       <div className="w-full max-w-lg">
         <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl shadow-black/30">
+          {trip.coverImage && (
+            <div className="relative h-64 overflow-hidden">
+              <img
+                src={trip.coverImage}
+                alt={trip.title}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          )}
           <div className="border-b border-slate-800 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-6 py-5">
             <p className="mb-1 text-xs font-medium uppercase tracking-widest text-indigo-400">
               Trip Details
@@ -62,6 +71,27 @@ const TripCard = () => {
             </h1>
           </div>
           <div className="p-6">
+            {trip.photos && trip.photos.length > 0 && (
+              <div className="mb-6">
+                <p className="mb-3 text-sm font-medium text-slate-400">
+                  Trip Photos
+                </p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {trip.photos.map((photo, index) => (
+                    <div
+                      key={index}
+                      className="h-32 overflow-hidden rounded-xl border border-slate-800"
+                    >
+                      <img
+                        src={photo}
+                        alt={`${trip.title} photo ${index + 1}`}
+                        className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="space-y-5">
               <div className="flex items-start justify-between gap-4">
                 <span className="text-sm font-medium text-slate-400">
@@ -129,5 +159,4 @@ const TripCard = () => {
     </div>
   );
 };
-
 export default TripCard;

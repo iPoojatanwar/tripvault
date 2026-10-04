@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body
-    if (!name || !email || !password) {
+    const { name, email, password ,username ,bio} = req.body
+    if (!name || !email || !password || !username)  {
       return res.status(400).json({
         message: "Please fill all fields"
       })
@@ -18,6 +18,7 @@ export const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10)
     const newUser = await User.create({
       name,
+      username,
       email,
       password: hashedPassword
     })
@@ -32,7 +33,9 @@ export const registerUser = async (req, res) => {
       user: {
         id: newUser._id,
         name: newUser.name,
-        email: newUser.email
+        email: newUser.email,
+        username:newUser.username,
+        bio:newUser.bio
       }
     })
   } catch (error) {
@@ -42,7 +45,6 @@ export const registerUser = async (req, res) => {
     })
   }
 }
-
 
 export const login = async (req, res) => {
   try {
@@ -88,7 +90,6 @@ export const login = async (req, res) => {
     })
   }
 } 
-
 
  export const me= async( req,res)=>{
  try {

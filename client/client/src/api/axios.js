@@ -1,12 +1,10 @@
 import axios from 'axios'
-
 const API = axios.create({
-    baseURL: "http://localhost:5000/api", // 1. Set to base /api so both /auth and /trip work!
+    baseURL: "http://localhost:5000/api",
     headers: {
         "Content-Type": 'application/json'
     }
 })
-
 API.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token')
@@ -15,9 +13,8 @@ API.interceptors.request.use(
         }
         return config;
     }, 
-    (error) => { // 2. Added the comma here!
+    (error) => { 
         return Promise.reject(error)
     }
 )
-
 export default API

@@ -17,6 +17,14 @@ const  tripSchema = new mongoose.Schema({
  description:{
     type:String
  },
+ coverImage:{
+   type:String,
+   default:''
+ },
+ photos:{
+   type:[String],
+   default:[]
+ },
  rating:{
 type:Number,
 min:1,
