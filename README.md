@@ -1,50 +1,27 @@
-✈️ TripVault
-
+ TripVault
 A full-stack travel memory journal built with the MERN stack.
-
-TripVault allows users to securely create accounts, save their travel experiences, upload trip images, manage their memories, and share their travel profiles.
-
-📌 About
-
-TripVault is a full-stack travel memory journal developed as part of the CodGen Full Stack Internship.
-
-The project focuses on building a complete MERN application with:
-
-User authentication
-
-JWT-based authorization
-
+TripVault allows users to create accounts, save their travel experiences, upload trip images, manage travel memories, and share their experiences through public profiles.
+ About
+TripVault was developed as part of the CodGen Full Stack Internship.
+The project demonstrates a complete full-stack application with:
+User authentication and authorization
+JWT-based protected routes
 User profiles
-
 Trip CRUD operations
-
 Trip ownership protection
-
 Image uploads
-
 Public travel profiles
-
 Responsive UI
-
 REST API integration
-
-Users can register and log in securely, create travel memories, add destinations and ratings, upload cover images and additional photos, update their trips, and delete them when needed.
-
-🚀 Features
-🔐 Authentication
-
-User registration
-
-User login
-
-Password hashing using bcrypt
-
+MongoDB database integration
+Environment-based configuration
+Production deployment setup
+ Features
+Authentication
+User registration and login
+Password hashing with bcryptjs
 JWT authentication
-
 Protected routes
-
-Logged-in user information
-
 Logout functionality
 
 Form validation
@@ -53,7 +30,7 @@ Loading and error states
 
 Toast notifications
 
-👤 User Profile
+ User Profile
 
 Username
 
@@ -61,81 +38,73 @@ Full name
 
 Email
 
-User bio
+Bio
 
-Personal profile page
+Personal profile
 
 Public profile using username
 
-Display user's travel memories
-
 Display total number of trips
 
-🧳 Trip Management
+Display user's travel memories
 
-Create a new trip
+ Trip Management
 
-View all trips belonging to the logged-in user
+Create trips
 
-View individual trip details
+View personal trips
 
-Update existing trips
+View trip details
 
-Delete trips with confirmation
+Update trips
+
+Delete trips
 
 Trip ownership protection
 
-Empty state when no trips exist
+Trip rating from 1–5
 
-Loading states
+Loading and empty states
 
 Responsive dashboard
 
-Trip rating from 1–5
+ Image Management
 
-📸 Trip Images
-
-Upload a cover image
+Upload cover images
 
 Upload multiple trip photos
 
-Preview selected photos
+Preview selected images
 
-Remove photos before submitting
+Remove selected photos
 
-Display cover image on trip details
+Preserve existing images while updating
 
-Display additional trip photos
+Add new images while updating
 
-Preserve existing images while updating trips
+ Public Profiles
 
-🌐 Public Profile
+Users can share their travel memories through a public profile.
 
-Users can access a public profile through their username.
+Public profiles display:
 
-The public profile displays:
-
-User name
-
-Username
+User information
 
 Bio
 
 Total trips
 
-Travel memories
-
-Trip destinations
+Travel destinations
 
 Trip dates
 
-Trip ratings
+Ratings
 
 Cover images
 
 Additional trip photos
 
-🛠️ Tech Stack
+ Tech Stack
 Frontend
 
 React
@@ -147,6 +116,8 @@ React Router
 Axios
 
 Tailwind CSS
+
+DaisyUI
 
 React Hot Toast
 
@@ -160,195 +131,107 @@ MongoDB
 
 Mongoose
 
+JWT
+
 bcryptjs
 
-JSON Web Token (JWT)
+Multer
 
-📁 Project Structure
-TripVault/
-├── client/
-│   ├── src/
-│   │   ├── Components/
-│   │   │   ├── ProtectedRoute.jsx
-│   │   │   ├── TripCard.jsx
-│   │   │   ├── TripForm.jsx
-│   │   │   └── UpdateTrip.jsx
-│   │   │
-│   │   ├── Pages/
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Login.jsx
-│   │   │   ├── Register.jsx
-│   │   │   └── PublicProfile.jsx
-│   │   │
-│   │   └── api/
-│   │       └── axios.js
-│   │
-│   └── ...
-│
-├── server/
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   └── tripController.js
-│   │
-│   ├── middleware/
-│   │   └── authMiddleware.js
-│   │
-│   ├── models/
-│   │   ├── users.model.js
-│   │   └── trips.model.js
-│   │
-│   ├── routes/
-│   │   ├── auth.route.js
-│   │   └── tripRouter.js
-│   │
-│   └── server.js
-│
-├── .gitignore
-└── README.md
+Cloudinary
 
-🔌 API Routes
+CORS
+
+dotenv
+
+Deployment
+
+Frontend: Vercel
+
+Backend: Render
+
+Database: MongoDB Atlas
+
+Repository: GitHub
+
+
+
+ API Routes
 Authentication
-Method	Route	Purpose
-POST	/api/auth/register	Register a new user
-POST	/api/auth/login	Login user and receive JWT
+Method	Endpoint	Description
+POST	/api/auth/register	Register user
+POST	/api/auth/login	Login user
 GET	/api/auth/me	Get logged-in user
-Trip Management
-
-All trip routes require a valid JWT.
-
-Method	Route	Purpose
-POST	/api/trip/	Create a new trip
+Trips
+Method	Endpoint	Description
+POST	/api/trip/	Create trip
 GET	/api/trip/allTrips	Get user's trips
-GET	/api/trip/:id	Get a single trip
-PUT	/api/trip/:id	Update a trip
-DELETE	/api/trip/:id	Delete a trip
+GET	/api/trip/:id	Get trip
+PUT	/api/trip/:id	Update trip
+DELETE	/api/trip/:id	Delete trip
 Public Profile
-Method	Route	Purpose
-GET	/api/users/:username/profile	Get a user's public profile
-📋 User Model
+Method	Endpoint	Description
+GET	/api/users/:username/profile	Get public profile
 
-Each user contains information such as:
+Protected endpoints require a valid JWT.
 
-name
-username
-email
-password
-bio
+Security
 
+TripVault uses JWT-based authentication and authorization.
 
-The password is securely hashed using bcryptjs before being stored in the database.
+Passwords are hashed using bcryptjs.
 
-📋 Trip Model
+JWT tokens are used to authenticate protected requests.
 
-Each trip contains:
+Trip ownership is checked before modifying or deleting trips.
 
-title
-destination
-startDate
-endDate
-description
-rating
-coverImage
-photos
-user
+Sensitive configuration is stored using environment variables.
 
+Database credentials and secrets are not stored in source code.
 
-The user field references the authenticated user who owns the trip.
-
-🔐 Security
-
-Trip routes are protected using JWT authentication.
-
-After login, the server generates a JWT containing the user's ID. The frontend stores the token and sends it with protected API requests.
-
-Users can only access and modify their own trips.
-
-Ownership is verified before retrieving, updating, or deleting a trip.
-
-For example:
+Example ownership check:
 
 {
   _id: req.params.id,
   user: req.user.id
 }
 
+ Environment Variables
+Backend
 
-This prevents one authenticated user from modifying another user's travel memories.
+Create .env inside the server directory:
 
-Passwords are never stored as plain text. They are hashed using:
+PORT=5000
+DATABASE_URL=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+FRONTEND_URL=http://localhost:5173
 
-bcrypt.hash(password, 10)
+Frontend
 
-🔄 Application Flow
-Register
-   ↓
-Login
-   ↓
-JWT Token
-   ↓
-Dashboard
-   ↓
-Create Trip
-   ↓
-Upload Images
-   ↓
-View Trips
-   ↓
-View Trip Details
-   ↓
-Update Trip
-   ↓
-Delete Trip
+Create .env inside the client directory:
 
-Public Profile Flow
-User Profile
-   ↓
-Username
-   ↓
-Public Profile
-   ↓
-User Bio
-   ↓
-Travel Memories
-   ↓
-Trip Images & Details
+VITE_API_URL=http://localhost:5000/api
 
-🖼️ Image Management
 
-TripVault supports both cover images and multiple additional photos.
+For production, VITE_API_URL should contain the deployed Render backend URL.
 
-When creating a trip, users can:
+Never commit .env files to GitHub.
 
-Select a cover image
-
-Select multiple photos
-
-Preview selected photos
-
-Remove unwanted photos
-
-Submit images along with trip information
-
-When updating a trip, existing images can be preserved while new images can be added.
-
-⚙️ Setup
-1. Clone the Repository
-git clone https://github.com/iPoojatanwar
+Local Development
+1. Clone the repository
+git clone https://github.com/iPoojatanwar/TripVault.git
 cd TripVault
 
-2. Backend Setup
+2. Start the backend
 cd server
 npm install
 npm run dev
 
 
-Create a .env file inside the server directory:
+Backend:
 
-PORT=5000
-DATABASE_URL=your_mongodb_url
-JWT_SECRET=your_secret
+http://localhost:5000
 
-3. Frontend Setup
+3. Start the frontend
 
 Open another terminal:
 
@@ -357,80 +240,135 @@ npm install
 npm run dev
 
 
-Do not upload your .env file to GitHub.
+Frontend:
 
-🧪 Testing
+http://localhost:5173
 
-The backend APIs can be tested using Postman.
+ Deployment
 
-Test the following operations:
+TripVault uses a separate frontend and backend deployment architecture:
 
-POST    /api/auth/register
-POST    /api/auth/login
-GET     /api/auth/me
+User
+  ↓
+Vercel
+  ↓
+React Frontend
+  ↓
+Render
+  ↓
+Express API
+  ↓
+MongoDB Atlas
 
-POST    /api/trip/
-GET     /api/trip/allTrips
-GET     /api/trip/:id
-PUT     /api/trip/:id
-DELETE  /api/trip/:id
+Frontend
 
-GET     /api/users/:username/profile
+The React application is deployed using Vercel.
+
+Production environment variable:
+
+VITE_API_URL=https://your-backend.onrender.com/api
+
+Backend
+
+The Express API is deployed using Render.
+
+Production environment variables include:
 
 
-A valid JWT must be included when accessing protected routes.
 
-💡 What I Learned
+Database
 
-During this project, I learned how to:
+MongoDB Atlas is used as the production database.
 
-Build REST APIs using Express.js
+The MongoDB connection string is stored securely in the backend environment variables.
 
-Create MongoDB schemas using Mongoose
+Testing
 
-Implement user registration and login
+Backend APIs can be tested using Postman.
 
-Hash passwords using bcrypt
+Main areas tested:
 
-Generate and verify JWT tokens
+User registration
 
-Create protected API routes
+User login
 
-Implement authorization and trip ownership
+Authentication
 
-Build complete CRUD functionality
+Trip creation
 
-Connect React forms with backend APIs
+Trip retrieval
 
-Manage API requests using Axios
+Trip update
 
-Handle multipart form data and image uploads
+Trip deletion
 
-Display image previews using URL.createObjectURL()
+Public profiles
 
-Manage and revoke temporary object URLs
+Protected routes
 
-Build responsive interfaces using Tailwind CSS
+ Responsive Design
 
-Create public user profiles
+The frontend is built with responsive layouts using Tailwind CSS and supports:
 
-Connect users with their travel memories
+Mobile devices
 
-Handle loading, error, and empty states
+Tablets
 
-Use React state and useEffect for API-driven UI
+Laptops
 
-Test APIs using Postman
+Desktop screens
 
-Connect frontend and backend into a complete MERN application
+ What I Learned
 
-🎯 Project Outcome
+Through this project, I gained practical experience with:
 
-TripVault demonstrates a complete full-stack application where authentication, authorization, CRUD operations, user profiles, image management, and frontend-backend integration work together in one application.
+Building REST APIs with Express.js
 
-The project helped strengthen my understanding of building real-world MERN applications from the database and REST API layer to the React frontend.
+MongoDB and Mongoose
 
-👨‍💻 Developer
+JWT authentication and authorization
+
+Password hashing with bcryptjs
+
+Protected routes
+
+CRUD operations
+
+Trip ownership authorization
+
+React state management
+
+Axios API integration
+
+Multipart form data
+
+Image uploads
+
+Responsive UI development
+
+Public user profiles
+
+Environment variables
+
+API testing with Postman
+
+MongoDB Atlas
+
+Vercel deployment
+
+Render deployment
+
+Frontend and backend integration
+
+ Project Outcome
+
+TripVault demonstrates a complete MERN application combining:
+
+Authentication → Authorization → CRUD → Image Uploads → Public Profiles → MongoDB → Production Deployment
+
+The project provided practical experience in developing and preparing a real-world full-stack application for deployment.
+
+ Developer
 
 Pooja Tanwar
 

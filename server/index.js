@@ -11,7 +11,7 @@ const port= process.env.PORT
 const mongodb=process.env.DATABASE_URL
  const app= express()
  app.use(express.json())
- app.use(cors())
+ app.use(cors({origin:process.env.FRONTEND_URL ,credentials:true}))
 app.get('/',(req,res)=>{res.status(200).json({message:"TripVault API IS RUNNING"})})
 app.use('/api/auth',route)
 app.use('/api/trip',triprouter)
